@@ -3,27 +3,19 @@ from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
+from langchain_tavily import TavilySearch
 
 load_dotenv()
 
-def search(query: str) -> str:
-    """
-    Tool that searches the web for information
-    Args:
-        query: The query to search for
-    Returns:
-        The search results
-    """
-    print(f"Searching for {query}")
-    return "Tokyo weather is sunny"
 
-llm = ChatOpenAI()
-tools = [search]
+
+llm = ChatOpenAI(model="gpt-5")
+tools = [TavilySearch()]
 agent = create_agent(model=llm, tools=tools)
 
 def main():
     print("Hello from langchain-react!")
-    result = agent.invoke({"messages": HumanMessage(content="What is the weather in Tokyo?")})
+    result = agent.invoke({"messages": HumanMessage(content="Search for engineering manager in AI & ML 3 job posting in Californa using langchain")})
     print(result)
 if __name__ == "__main__":
     main()
