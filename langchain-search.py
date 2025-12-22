@@ -4,18 +4,16 @@ load_dotenv()
 from langchain_openai import ChatOpenAI
 from langchain_tavily import TavilySearch
 from langchain.agents import create_agent
-from langsmith import Client
-client = Client()
+from langchain_core.messages import HumanMessage
 
 tools = [TavilySearch()]
 llm = ChatOpenAI(model="gpt-4")
-react_prompt_template = client.pull_prompt("hwchase17/react", include_model=True)
-react_prompt = react_prompt_template.template
 
-agent = create_agent(model=llm, tools=tools, system_prompt=react_prompt)
+# Use create_agent without custom prompt - it handles tool usage automatically
+agent = create_agent(model=llm, tools=tools)
 
 def main():
-   result = agent.invoke({"input": "Search for engineering manager in AI & ML 3 job posting in Californa using langchain"})
+   result = agent.invoke({"messages": [HumanMessage(content="Search for engineering manager in AI & ML 3 job posting in California using langchain")]})
    print(result)
    
 if __name__ == "__main__":
