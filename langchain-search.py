@@ -1,4 +1,7 @@
 from dotenv import load_dotenv
+import warnings
+warnings.filterwarnings('ignore', message='.*shadows an attribute in parent.*')
+
 load_dotenv()
 
 from langchain_openai import ChatOpenAI
