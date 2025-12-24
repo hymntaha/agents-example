@@ -25,8 +25,8 @@ tokenizer = AutoTokenizer.from_pretrained(
     add_eos_token=True)
 tokenizer.pad_token = tokenizer.eos_token
 
-train_dataset = load_dataset('gem/viggo', split='train')
-eval_dataset = load_dataset('gem/viggo', split='validation')
-test_dataset = load_dataset('gem/viggo', split='test')
+train_dataset = load_dataset('GEM/viggo', split='train')
+eval_dataset = load_dataset('GEM/viggo', split='validation')
+test_dataset = load_dataset('GEM/viggo', split='test')
 
 print(test_dataset[0])
