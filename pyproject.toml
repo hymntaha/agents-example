@@ -5,7 +5,11 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "accelerate>=1.12.0",
+    "bitsandbytes>=0.49.0",
     "black>=25.12.0",
+    "datasets>=4.4.2",
+    "dspy-ai>=3.0.4",
     "isort>=7.0.0",
     "langchain>=1.2.0",
     "langchain-ollama>=1.0.1",
@@ -13,5 +17,8 @@ dependencies = [
     "langchain-tavily>=0.2.15",
     "langchainhub>=0.1.0",
     "langsmith>=0.1.0",
+    "peft>=0.18.0",
     "python-dotenv>=1.2.1",
+    "transformers>=4.57.3",
+    "weaviate-client>=4.19.0",
 ]
