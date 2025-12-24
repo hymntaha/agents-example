@@ -29,4 +29,4 @@ train_dataset = load_dataset('GEM/viggo', split='train')
 eval_dataset = load_dataset('GEM/viggo', split='validation')
 test_dataset = load_dataset('GEM/viggo', split='test')
 
-print(test_dataset[0])
+print(test_dataset)
