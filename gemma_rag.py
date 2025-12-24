@@ -29,8 +29,6 @@ train_dataset = load_dataset('gem/viggo', split='train', trust_remote_code=True)
 eval_dataset = load_dataset('gem/viggo', split='validation', trust_remote_code=True)
 test_dataset = load_dataset('gem/viggo', split='test', trust_remote_code=True)
 
-print(test_dataset)
-
 def tokenize(prompt):
     result = tokenizer(
         prompt,
@@ -55,3 +53,12 @@ The attributes must be one of the following: ['name', 'exp_release_date', 'relea
 {data_point["meaning_representation"]}
 """
     return tokenize(full_prompt)
+
+
+tokenized_train_dataset = train_dataset.map(generate_and_tokenize_prompt)
+tokenized_val_dataset = eval_dataset.map(generate_and_tokenize_prompt)
+print("here is the tokenized validation dataset")
+print(tokenized_val_dataset)
+
+print("Target Sentence: " + test_dataset[1]['target'])
+print("Meaning Representation: " + test_dataset[1]['meaning_representation'] + "\n")
