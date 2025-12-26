@@ -16,23 +16,16 @@ else:
     device = "cpu"
 print(f"Using device: {device}")
 
-# BitsAndBytesConfig only works with CUDA, so we conditionally use it
-if device == "cuda":
-    bnb_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.bfloat16
-    )
-    # Loading the model with quantization
-    model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=bnb_config)
-else:
-    # Loading the model without quantization for MPS/CPU
-    print("Note: Quantization not available on MPS/CPU, loading full model (this may require more memory)")
-    model = AutoModelForCausalLM.from_pretrained(
-        model_id, 
-        torch_dtype=torch.float16 if device == "mps" else torch.float32
-    )
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.bfloat16
+)
+
+# Loading the model and tokenizer
+
+model = AutoModelForCausalLM.from_pretrained(model_id,quantization_config=bnb_config)
 tokenizer = AutoTokenizer.from_pretrained(
     model_id,
     model_max_length=512,
