@@ -78,3 +78,20 @@ model_input = tokenizer(eval_prompt, return_tensors="pt").to(device)
 model.eval()
 with torch.no_grad():
     print(tokenizer.decode(model.generate(**model_input, max_new_tokens=256, pad_token_id=2)[0], skip_special_tokens=True))
+
+model.gradient_checkpointing_enable()
+model = prepare_model_for_kbit_training(model)
+
+def print_trainable_parameters(model):
+    """
+    Prints the number of trainable parameters in the model.
+    """
+    trainable_params = 0
+    all_param = 0
+    for _, param in model.named_parameters():
+        all_param += param.numel()
+        if param.requires_grad:
+            trainable_params += param.numel()
+    print(
+        f"trainable params: {trainable_params} || all params: {all_param} || trainable%: {100 * trainable_params / all_param}"
+    )
