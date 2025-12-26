@@ -6,18 +6,33 @@ from datasets import load_dataset
 from peft import prepare_model_for_kbit_training, LoraConfig, PeftModel, get_peft_model
 
 model_id = "mistralai/Mistral-7B-Instruct-v0.2"
-device = "cuda"
 
-bnb_config = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_use_double_quant=True,
-    bnb_4bit_quant_type="nf4",
-    bnb_4bit_compute_dtype=torch.bfloat16
-)
+# Set device based on what's available
+if torch.cuda.is_available():
+    device = "cuda"
+elif torch.backends.mps.is_available():
+    device = "mps"  # Apple Silicon GPU
+else:
+    device = "cpu"
+print(f"Using device: {device}")
 
-# Loading the model and tokenizer
-
-model = AutoModelForCausalLM.from_pretrained(model_id,quantization_config=bnb_config)
+# BitsAndBytesConfig only works with CUDA, so we conditionally use it
+if device == "cuda":
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_use_double_quant=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16
+    )
+    # Loading the model with quantization
+    model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=bnb_config)
+else:
+    # Loading the model without quantization for MPS/CPU
+    print("Note: Quantization not available on MPS/CPU, loading full model (this may require more memory)")
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id, 
+        torch_dtype=torch.float16 if device == "mps" else torch.float32
+    )
 tokenizer = AutoTokenizer.from_pretrained(
     model_id,
     model_max_length=512,
@@ -95,3 +110,24 @@ def print_trainable_parameters(model):
     print(
         f"trainable params: {trainable_params} || all params: {all_param} || trainable%: {100 * trainable_params / all_param}"
     )
+config = LoraConfig(
+    r=8,
+    lora_alpha=16,
+    target_modules=[
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj",
+        "lm_head",
+    ],
+    bias="none",
+    lora_dropout=0.05,  # Conventional
+    task_type="CAUSAL_LM",
+)
+model = get_peft_model(model, config)
+print_trainable_parameters(model)
+# Apply the accelerator. You can comment this out to remove the accelerator.
+#model = accelerator.prepare_model(model)
