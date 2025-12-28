@@ -162,3 +162,16 @@ trainer = transformers.Trainer(
 )
 model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
 trainer.train()
+
+base_model = AutoModelForCausalLM.from_pretrained(
+    model_path,  # Mistral, same as before
+    quantization_config=bnb_config,  # Same quantization config as before
+    device_map="auto",
+    trust_remote_code=True,
+    use_auth_token=True
+)
+tokenizer = AutoTokenizer.from_pretrained(model_path, 
+                                          padding_side="left",
+                                          add_eos_token=True,
+                                          trust_remote_code=True)
+tokenizer.pad_token = tokenizer.eos_token
