@@ -175,3 +175,9 @@ tokenizer = AutoTokenizer.from_pretrained(model_path,
                                           add_eos_token=True,
                                           trust_remote_code=True)
 tokenizer.pad_token = tokenizer.eos_token
+
+ft_model = PeftModel.from_pretrained(base_model, "mistral-viggo-finetune/checkpoint-600")
+
+ft_model.eval()
+with torch.no_grad():
+    print(tokenizer.decode(ft_model.generate(**model_input, max_new_tokens=256, pad_token_id=2)[0], skip_special_tokens=True,repetition_penalty=1.5,temperature=0.2))
