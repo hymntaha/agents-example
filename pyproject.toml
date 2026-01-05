@@ -24,6 +24,7 @@ dependencies = [
     "peft>=0.18.0",
     "pytest>=9.0.0",
     "python-dotenv>=1.2.1",
+    "scikit-learn>=1.8.0",
     "transformers>=4.57.3",
     "weaviate-client>=4.19.0",
 ]
