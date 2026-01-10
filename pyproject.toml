@@ -30,4 +30,5 @@ dependencies = [
     "transformers>=4.57.3",
     "weaviate-client>=4.19.0",
     "xgboost>=2.0.0",
+    "lightgbm>=4.6.0",
 ]
