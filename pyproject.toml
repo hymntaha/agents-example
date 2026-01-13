@@ -33,4 +33,5 @@ dependencies = [
     "lightgbm>=4.6.0",
     "lime>=0.2.0",
     "plotly>=6.5.0",
+    "wandb>=0.23.0",
 ]
